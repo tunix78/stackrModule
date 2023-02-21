@@ -9,14 +9,15 @@ jobs:
     name: Build Sphinx documentation
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
+      - name: Print context info
         run: | 
           echo "The job was automatically triggered by a ${{ github.event_name }} event."
           echo "This job is now running on a ${{ runner.os }} server hosted by GitHub!"
           echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
           echo "The ${{ github.repository }} repository has been cloned to the runner."
           echo "The workflow is now ready to test your code on the runner."
+      - name: Check out repository code
+        uses: actions/checkout@v3
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
@@ -24,5 +25,6 @@ jobs:
         uses: actions/ammaraskar/sphinx-action@master
         with:
           docs-folder: "docs/"
+      - name: Print job status
         run: |
           echo "This job's status is ${{ job.status }}."

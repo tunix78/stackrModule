@@ -22,7 +22,7 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - name: Do the Sphinx Build
-        uses: actions/ammaraskar/sphinx-action@master
+        uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "docs/"
       - name: Print job status

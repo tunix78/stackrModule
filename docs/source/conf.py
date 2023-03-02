@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'StackrModule'
+project = 'ModuleDocs'
 copyright = '2023, Sven Gauggel'
 author = 'Sven Gauggel, HumptyDumpty Corp.'
 release = '0.1'

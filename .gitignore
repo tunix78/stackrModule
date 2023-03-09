@@ -1,1 +1,11 @@
 docs/build/*
+test/node_modules
+test/resourceGroup/results/*
+test/resourceGroup/providers.tf
+test/resourceGroup/package.json
+test/resourceGroup/package-lock.json
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+.terraform/*
+.venv/*

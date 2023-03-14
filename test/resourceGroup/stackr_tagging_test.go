@@ -1,19 +1,25 @@
 package main
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"log"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/spf13/pflag" // godog v0.11.0 and later
-	"github.com/stretchr/testify/assert"
+
+	"github.com/open-policy-agent/opa/rego"
 )
 
 var terraformOptions *terraform.Options
 var tm *testing.T = new(testing.T)
+var jsonPlan string
 
 // godog.TestSuite
 var opts = godog.Options{
@@ -21,9 +27,9 @@ var opts = godog.Options{
 	Format: "progress", // can define default values
 }
 
-func tearDown(t *testing.T, terraformOptions *terraform.Options) {
+func deferTearDown(t *testing.T, terraformOptions *terraform.Options) {
 	log.Println("IN TEAR DOWN")
-	terraform.Destroy(t, terraformOptions)
+	defer terraform.Destroy(t, terraformOptions)
 }
 
 func setup(t *testing.T) *terraform.Options {
@@ -38,6 +44,7 @@ func setup(t *testing.T) *terraform.Options {
 
 	tfOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../../",
+		PlanFilePath: "plan.out",
 
 		Vars: map[string]interface{}{
 			"stackrName":     resourcegroup_name,
@@ -45,34 +52,9 @@ func setup(t *testing.T) *terraform.Options {
 		},
 	})
 
-	terraform.InitAndApply(t, tfOptions)
-
 	log.Printf("terraformOptions: %s", tfOptions.TerraformDir)
 
 	return tfOptions
-}
-
-func aResourceGroupIsCreated() error {
-	log.Println("IN GIVEN")
-	return nil
-}
-
-func iCheckForTagsAgainstTehResourceGroup() error {
-	log.Println("IN WHEN")
-	return nil
-}
-
-func iExpectToHaveAtLeastTheFollowingTagsPresent() error {
-	log.Println("IN THEN")
-	assert.Equal(tm, "ABC", "DEF", "The two flags should be the same")
-	return nil
-}
-
-func InitializeScenario(ctx *godog.ScenarioContext) {
-	log.Println("IN INITIALIZE_SCENARIO")
-	ctx.Step(`^A resource group is created$`, aResourceGroupIsCreated)
-	ctx.Step(`^I check for tags against the resource group$`, iCheckForTagsAgainstTehResourceGroup)
-	ctx.Step(`^I expect to have at least the following tags present$`, iExpectToHaveAtLeastTheFollowingTagsPresent)
 }
 
 // godog.TestSuite
@@ -89,7 +71,6 @@ func TestMain(m *testing.M) {
 	opts.Paths = pflag.Args()
 
 	log.Println("BEFORE SETUP")
-
 	terraformOptions = setup(tm)
 
 	log.Println("BEFORE godog.run")
@@ -100,9 +81,87 @@ func TestMain(m *testing.M) {
 		Options:             &opts,
 	}.Run()
 
-	log.Println("BEFORE TEARDOWN")
-
-	tearDown(tm, terraformOptions)
+	//log.Println("BEFORE DEFER_TEARDOWN")
+	//deferTearDown(tm, terraformOptions)
 
 	os.Exit(status)
+}
+
+func InitializeScenario(ctx *godog.ScenarioContext) {
+	log.Println("IN INITIALIZE_SCENARIO")
+	ctx.Step(`^A resource group is planned via Terraform$`, aResourceGroupIsPlanned)
+	ctx.Step(`^I expect to have at least the following tags present$`, iExpectToHaveAtLeastTheFollowingTagsPresent)
+	ctx.Step(`^I expect the location of the resource group to be one of the following$`, iExpectTheLocationOfTheResourceGroupToBeOneOfTheFollowing)
+}
+
+func aResourceGroupIsPlanned() error {
+	log.Println("IN GIVEN")
+	jsonPlan = terraform.InitAndPlanAndShow(tm, terraformOptions)
+	//terraform.InitAndApply(tm, terraformOptions)
+	return nil
+}
+
+func iExpectToHaveAtLeastTheFollowingTagsPresent() error {
+	log.Println("IN THEN")
+
+	ctx := context.Background()
+
+	jd := json.NewDecoder(bytes.NewBufferString(jsonPlan))
+	jd.UseNumber()
+
+	var input interface{}
+	if err := jd.Decode(&input); err != nil {
+		return err
+	}
+
+	// Create query that returns a single boolean value.
+	rego := rego.New(
+		rego.Query("data.stackr.allow = true"),
+		rego.Load([]string{"/Users/svengauggel/terraform/stackrOpa/rules/required_tags.rego"}, nil),
+		rego.Input(input))
+
+	// Run evaluation.
+	rs, err := rego.Eval(ctx)
+	log.Println("Allowed: " + strconv.FormatBool(rs.Allowed()))
+
+	// Check if we should fail the scenario
+	if err != nil {
+		log.Println("Error: " + err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func iExpectTheLocationOfTheResourceGroupToBeOneOfTheFollowing() error {
+	log.Println("IN AND")
+
+	ctx := context.Background()
+
+	jd := json.NewDecoder(bytes.NewBufferString(jsonPlan))
+	jd.UseNumber()
+
+	var input interface{}
+	if err := jd.Decode(&input); err != nil {
+		return err
+	}
+
+	// Create query that returns a single boolean value.
+	rego := rego.New(
+		rego.Query("data.stackr.allow = true"),
+		rego.Load([]string{"/Users/svengauggel/terraform/stackrOpa/rules/required_locations.rego",
+			"/Users/svengauggel/terraform/stackrOpa/data/allowed_locations.json"}, nil),
+		rego.Input(input))
+
+	// Run evaluation.
+	rs, err := rego.Eval(ctx)
+	log.Println("Allowed: " + strconv.FormatBool(rs.Allowed()))
+
+	// Check if we should fail the scenario
+	if err != nil {
+		log.Println("Error: " + err.Error())
+		return err
+	}
+
+	return nil
 }

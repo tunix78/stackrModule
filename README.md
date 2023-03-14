@@ -22,7 +22,7 @@ Represents the core stackr module building the Azure base structures
     `go mod tidy`
 - Run godog tests and output test results into json file
     - Needs to be run in the folder with the golang test file (e.g. test/resourceGroup)
-    `go test -v --godog.random --godog.format=cucumber:cucumber.json`
+    `go test -v --godog.random --godog.format=cucumber:results/cucumber.json`
 
 - Install cucumber-html-reporter
 

@@ -28,7 +28,8 @@ jobs:
       - name: Init and Tidy
         run: |
           cd test/resourceGroup
-          go mod init
+          go version
+          go mod init github.com/tunix78/stackrModule
           go mod tidy
       - name: Test
         run: |

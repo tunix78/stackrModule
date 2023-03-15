@@ -5,8 +5,8 @@ on:
     branches:
       - main
 jobs:
-  StackrModule-Build-Sphinx-Docs:
-    name: Build Sphinx documentation
+  StackrModule-Build-Cucumber-And-Docs:
+    name: Build Cucumber And Documentation
     runs-on: ubuntu-latest
     steps:
       - name: Print context info
@@ -21,6 +21,12 @@ jobs:
       - name: List files in the repository post checkout
         run: |
           ls -R ${{ github.workspace }}
+      - name: Log me into Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        run: |
+          az webapp list --query "[?state=='Running']"
       - name: Set up Go
         uses: actions/setup-go@v3
         with:

@@ -27,11 +27,11 @@ jobs:
           # The Go version to download (if necessary) and use. Supports semver spec and ranges.
           go-version: # optional
           # Path to the go.mod or go.work file.
-          go-version-file: ${{ github.workspace }}/test/resourceGroup
+          go-version-file: test/resourceGroup
           # Set this option to true if you want the action to always check for the latest available version that satisfies the version spec
           check-latest: true
           # Used to specify the path to a dependency file - go.sum
-          cache-dependency-path: ${{ github.workspace }}/test/resourceGroup
+          cache-dependency-path: test/resourceGroup
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master
         with:

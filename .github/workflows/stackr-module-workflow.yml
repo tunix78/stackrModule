@@ -18,24 +18,24 @@ jobs:
           echo "The workflow is now ready to test your code on the runner."
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: List files in the repository
+      - name: List files in the repository post checkout
         run: |
-          ls ${{ github.workspace }}
-      - name: Setup Go environment
-        uses: actions/setup-go@v3.5.0
+          ls -R ${{ github.workspace }}
+      - name: Set up Go
+        uses: actions/setup-go@v3.5
         with:
-          # The Go version to download (if necessary) and use. Supports semver spec and ranges.
-          go-version: # optional
-          # Path to the go.mod or go.work file.
-          go-version-file: test/resourceGroup
-          # Set this option to true if you want the action to always check for the latest available version that satisfies the version spec
-          check-latest: true
-          # Used to specify the path to a dependency file - go.sum
-          cache-dependency-path: test/resourceGroup
+          go-version: 1.20
+      - name: Test
+        run: |
+          cd test/resourceGroup
+          go test -v --godog.random --godog.format=cucumber:results/cucumber.json
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "docs/"
+      - name: List files in the repository post build
+        run: |
+          ls -R ${{ github.workspace }}
       - name: Print job status
         run: |
           echo "This job's status is ${{ job.status }}."

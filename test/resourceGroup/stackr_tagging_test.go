@@ -117,7 +117,8 @@ func iExpectToHaveAtLeastTheFollowingTagsPresent() error {
 	// Create query that returns a single boolean value.
 	rego := rego.New(
 		rego.Query("data.stackr.allow = true"),
-		rego.Load([]string{"/Users/svengauggel/terraform/stackrOpa/rules/required_tags.rego"}, nil),
+		// FIXME this should be a proper variable, not a relative path
+		rego.Load([]string{"../../stackrOpa/rules/required_tags.rego"}, nil),
 		rego.Input(input))
 
 	// Run evaluation.
@@ -149,8 +150,8 @@ func iExpectTheLocationOfTheResourceGroupToBeOneOfTheFollowing() error {
 	// Create query that returns a single boolean value.
 	rego := rego.New(
 		rego.Query("data.stackr.allow = true"),
-		rego.Load([]string{"/Users/svengauggel/terraform/stackrOpa/rules/required_locations.rego",
-			"/Users/svengauggel/terraform/stackrOpa/data/allowed_locations.json"}, nil),
+		rego.Load([]string{"../../stackrOpa/rules/required_locations.rego",
+			"../../stackrOpa/data/allowed_locations.json"}, nil),
 		rego.Input(input))
 
 	// Run evaluation.

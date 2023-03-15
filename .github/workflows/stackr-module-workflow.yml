@@ -31,10 +31,11 @@ jobs:
           cd test/resourceGroup
           go version
           # go mod init github.com/tunix78/stackrModule
-          #go mod tidy
+          # go mod tidy
       - name: Test
         run: |
           cd test/resourceGroup
+          mkdir results
           go test -v --godog.random --godog.format=cucumber:results/cucumber.json
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master

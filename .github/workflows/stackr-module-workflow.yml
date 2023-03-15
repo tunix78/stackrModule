@@ -21,6 +21,17 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: Setup Go environment
+        uses: actions/setup-go@v3.5.0
+        with:
+          # The Go version to download (if necessary) and use. Supports semver spec and ranges.
+          go-version: # optional
+          # Path to the go.mod or go.work file.
+          go-version-file: ${{ github.workspace }}/test/resourceGroup
+          # Set this option to true if you want the action to always check for the latest available version that satisfies the version spec
+          check-latest: true
+          # Used to specify the path to a dependency file - go.sum
+          cache-dependency-path: ${{ github.workspace }}/test/resourceGroup
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master
         with:

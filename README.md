@@ -49,3 +49,10 @@ Represents the core stackr module building the Azure base structures
 - Build the documentation
 
     `sphinx-build -b html docs/source/ docs/build/html`
+
+## Instructions to connect to MongoDB and store test results as well as decision logs
+
+### Connect to MongoDB using VS Code
+
+- Install extension "MongoDB for VS Code"
+- Connect to MongoDB using this string: "mongodb+srv://svengauggel:<password>@stackrstore.0omkqsa.mongodb.net/test"

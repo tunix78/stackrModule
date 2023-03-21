@@ -24,6 +24,12 @@ jobs:
           repository: tunix78/stackrOpa
           token: ${{ secrets.STACKR_OPA_ACCESS_PAT }}
           path: stackrOpa
+      - name: Checkout stackrTools
+        uses: actions/checkout@v3
+        with:
+          repository: tunix78/stackrTools
+          token: ${{ secrets.STACKR_OPA_ACCESS_PAT }}
+          path: stackrTools
       - name: List files in the repository post checkout
         run: |
           ls -R ${{ github.workspace }}
@@ -47,6 +53,19 @@ jobs:
           cd test/resourceGroup
           mkdir results
           go test -v --godog.random --godog.format=cucumber:results/cucumber.json
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.15.0
+      - name: Install cucumber-html-reporter
+        run: npm install cucumber-html-reporter --save-dev
+      - name: Create html reports
+        run: |
+          cd test
+          node index.js
+      - name: Upload cucumber reports to data store and timestamp, version them
+        run: |
+          
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master
         with:

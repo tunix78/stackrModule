@@ -2,6 +2,7 @@ Feature: The correct billing tags are applied at the resource group level
     In order to do billing correctly
     I need to rely on all resources being tagged in a consistent manner
 
+    @SEC-CTRL-001
     Scenario: A resource group is created through a terraform module used by Stackr
         Given A resource group is planned via Terraform
         Then I expect to have at least the following tags present

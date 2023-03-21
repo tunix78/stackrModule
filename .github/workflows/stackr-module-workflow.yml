@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: tunix78/stackrTools
-          token: ${{ secrets.STACKR_OPA_ACCESS_PAT }}
+          token: ${{ secrets.STACKR_TOOLS_ACCESS_PAT }}
           path: stackrTools
       - name: List files in the repository post checkout
         run: |
@@ -65,7 +65,7 @@ jobs:
           node index.js
       - name: Upload cucumber reports to data store and timestamp, version them
         run: |
-          
+
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master
         with:

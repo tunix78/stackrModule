@@ -18,6 +18,9 @@ jobs:
           echo "The workflow is now ready to test your code on the runner."
       - name: Checkout repository code
         uses: actions/checkout@v3
+        with:
+          repository: tunix78/stackrModule
+          path: stackrModule
       - name: Checkout stackrOpa
         uses: actions/checkout@v3
         with:

@@ -47,13 +47,13 @@ jobs:
           check-latest: true
       - name: Init and Tidy
         run: |
-          cd test/resourceGroup
+          cd stackrModule/test/resourceGroup
           go version
           # go mod init github.com/tunix78/stackrModule
           # go mod tidy
       - name: Test
         run: |
-          cd test/resourceGroup
+          cd stackrModule/test/resourceGroup
           mkdir results
           go test -v --godog.random --godog.format=cucumber:results/cucumber.json
       - name: Install node
@@ -64,15 +64,15 @@ jobs:
         run: npm install cucumber-html-reporter --save-dev
       - name: Create html reports
         run: |
-          cd test
+          cd stackrModule/test
           node index.js
       - name: Upload cucumber reports to data store and timestamp, version them
         run: |
-
+          stackrModule/docs/_build/html
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master
         with:
-          docs-folder: "docs/"
+          docs-folder: "stackrModule/docs/"
       - name: List files in the repository post build
         run: |
           ls -R ${{ github.workspace }}

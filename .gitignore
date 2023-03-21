@@ -1,4 +1,5 @@
 docs/build/*
+docs/.DS_Store
 test/node_modules
 test/resourceGroup/results/*
 test/resourceGroup/providers.tf
@@ -9,3 +10,4 @@ terraform.tfstate.backup
 .terraform.lock.hcl
 .terraform/*
 .venv/*
+.DS_Store

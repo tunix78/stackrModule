@@ -20,6 +20,7 @@ import (
 var terraformOptions *terraform.Options
 var tm *testing.T = new(testing.T)
 var jsonPlan string
+var regoDir string
 
 // godog.TestSuite
 var opts = godog.Options{
@@ -60,6 +61,9 @@ func setup(t *testing.T) *terraform.Options {
 // godog.TestSuite
 func init() {
 	log.Println("IN INIT")
+
+	regoDir = os.Getenv("REGO_FULL_PATH")
+
 	//godog.BindFlags("godog.", pflag.CommandLine, &opts) // godog v0.10.0 and earlier
 	godog.BindCommandLineFlags("godog.", &opts) // godog v0.11.0 and later
 }
@@ -118,7 +122,7 @@ func iExpectToHaveAtLeastTheFollowingTagsPresent() error {
 	rego := rego.New(
 		rego.Query("data.stackr.allow = true"),
 		// FIXME this should be a proper variable, not a relative path
-		rego.Load([]string{"../../stackrOpa/rules/required_tags.rego"}, nil),
+		rego.Load([]string{regoDir + "/rules/required_tags.rego"}, nil),
 		rego.Input(input))
 
 	// Run evaluation.

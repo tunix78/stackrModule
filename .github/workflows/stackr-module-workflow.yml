@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+env:
+  REGO_DIR: /home/runner/work/stackrModule/stackrModule/stackrOpa
 jobs:
   StackrModule-Build-Cucumber-And-Docs:
     name: Build Cucumber And Documentation

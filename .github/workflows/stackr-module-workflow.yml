@@ -54,7 +54,7 @@ jobs:
       - name: Test
         run: |
           cd stackrModule/test/resourceGroup
-          mkdir results
+          mkdir -p results
           go test -v --godog.random --godog.format=cucumber:results/cucumber.json
       - name: Install node
         uses: actions/setup-node@v3

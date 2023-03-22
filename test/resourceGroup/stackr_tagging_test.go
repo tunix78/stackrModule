@@ -62,7 +62,8 @@ func setup(t *testing.T) *terraform.Options {
 func init() {
 	log.Println("IN INIT")
 
-	regoDir = os.Getenv("REGO_FULL_PATH")
+	regoDir = os.Getenv("REGO_DIR")
+	log.Println("REGO_DIR = " + regoDir)
 
 	//godog.BindFlags("godog.", pflag.CommandLine, &opts) // godog v0.10.0 and earlier
 	godog.BindCommandLineFlags("godog.", &opts) // godog v0.11.0 and later

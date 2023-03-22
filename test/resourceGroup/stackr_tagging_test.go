@@ -155,8 +155,8 @@ func iExpectTheLocationOfTheResourceGroupToBeOneOfTheFollowing() error {
 	// Create query that returns a single boolean value.
 	rego := rego.New(
 		rego.Query("data.stackr.allow = true"),
-		rego.Load([]string{"../../stackrOpa/rules/required_locations.rego",
-			"../../stackrOpa/data/allowed_locations.json"}, nil),
+		rego.Load([]string{regoDir + "/rules/required_locations.rego",
+			regoDir + "/data/allowed_locations.json"}, nil),
 		rego.Input(input))
 
 	// Run evaluation.

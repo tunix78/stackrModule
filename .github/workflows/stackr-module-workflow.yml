@@ -11,6 +11,22 @@ jobs:
     name: Build Cucumber And Documentation
     runs-on: ubuntu-latest
     steps:
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Test file creation
+        run: |
+          touch ${{ github.workspace }}/test.bla
+      - name: List test files
+        run: |
+          ls -R ${{ github.workspace }}
+      - name: Upload test file
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/docs/stackrModule/resourceGroup' -s test.bla
+
+
       - name: Print context info
         run: | 
           echo "The job was automatically triggered by a ${{ github.event_name }} event."
@@ -38,10 +54,6 @@ jobs:
       - name: List files in the repository post checkout
         run: |
           ls -R ${{ github.workspace }}
-      - name: Log me into Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Set up Go
         uses: actions/setup-go@v3
         with:

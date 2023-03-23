@@ -58,9 +58,6 @@ jobs:
           cd stackrModule/test/resourceGroup
           mkdir -p results
           go test -v --godog.random --godog.format=cucumber:results/cucumber.json
-      - name: List files in the repository post build
-        run: |
-          ls -R ${{ github.workspace }}
       - name: Install node
         uses: actions/setup-node@v3
         with:
@@ -75,6 +72,9 @@ jobs:
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "stackrModule/docs/"
+      - name: List files in the repository post build
+        run: |
+          ls -R ${{ github.workspace }}
       - name: Upload cucumber reports to data store and timestamp, version them
         # alternative here is to use the stackrUploadToStorageAccount.py script in stackrTools
         # TODO rename the resulting html and json files to prefix the specific test case file before uploading

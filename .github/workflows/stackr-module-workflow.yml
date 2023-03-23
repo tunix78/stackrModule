@@ -58,6 +58,9 @@ jobs:
           cd stackrModule/test/resourceGroup
           mkdir -p results
           go test -v --godog.random --godog.format=cucumber:results/cucumber.json
+      - name: List files in the repository post build
+        run: |
+          ls -R ${{ github.workspace }}
       - name: Install node
         uses: actions/setup-node@v3
         with:
@@ -68,16 +71,32 @@ jobs:
         run: |
           cd stackrModule/test
           node index.js
-      - name: Upload cucumber reports to data store and timestamp, version them
-        run: |
-          stackrModule/docs/_build/html
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "stackrModule/docs/"
-      - name: List files in the repository post build
-        run: |
-          ls -R ${{ github.workspace }}
+      - name: Upload cucumber reports to data store and timestamp, version them
+        # alternative here is to use the stackrUploadToStorageAccount.py script in stackrTools
+        # TODO rename the resulting html and json files to prefix the specific test case file before uploading
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+              az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/docs/stackrModule/resourceGroup' -s stackrModule/docs/_build/html/
+      #- name: Purge CDN endpoint
+      #  uses: azure/CLI@v1
+      #  with:
+      #    inlineScript: |
+      #      az cdn endpoint purge --content-paths  "/*" --profile-name "CDN_PROFILE_NAME" --name "CDN_ENDPOINT" --resource-group "SvensTest"
       - name: Print job status
         run: |
           echo "This job's status is ${{ job.status }}."
+      - name: logout
+        run: |
+              az logout
+        if: always()
+
+
+
+
+
+  # Azure logout

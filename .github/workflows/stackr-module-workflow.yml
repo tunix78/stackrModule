@@ -24,7 +24,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-              az storage blob upload-batch --account-name svensappstorage --auth-mode login -d '$web/docs/stackrModule/resourceGroup' -s ${{ github.workspace }}/
+              az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/docs/stackrModule/resourceGroup' -s ${{ github.workspace }}/
 
 
       - name: Print context info

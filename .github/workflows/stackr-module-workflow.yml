@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Some test
         run: |
-          az login --service-principal -u 761310a3-02dd-41ce-90b8-6d7aa078d47f -p=-dk8Q~h6b6_cJHP-bjpL-0hdNwsbb2mzexmcebE9 --tenant ac727e63-2ec2-4956-82b6-e061eb3cca16
+          az login --service-principal -u a70d566a-f0cb-44d5-8608-4a3647bdac07 -p=-dk8Q~h6b6_cJHP-bjpL-0hdNwsbb2mzexmcebE9 --tenant ac727e63-2ec2-4956-82b6-e061eb3cca16
           az account list show --output table
       - uses: azure/login@v1
         with:

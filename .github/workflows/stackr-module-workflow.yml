@@ -11,6 +11,10 @@ jobs:
     name: Build Cucumber And Documentation
     runs-on: ubuntu-latest
     steps:
+      - name: Some test
+        run: |
+          az login --service-principal -u 761310a3-02dd-41ce-90b8-6d7aa078d47f -p -dk8Q~h6b6_cJHP-bjpL-0hdNwsbb2mzexmcebE9 --tenant ac727e63-2ec2-4956-82b6-e061eb3cca16
+          az account list show --output table
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}

@@ -14,23 +14,9 @@ jobs:
       - name: Some test
         run: |
           az login --service-principal -u a70d566a-f0cb-44d5-8608-4a3647bdac07 -p=-dk8Q~h6b6_cJHP-bjpL-0hdNwsbb2mzexmcebE9 --tenant ac727e63-2ec2-4956-82b6-e061eb3cca16
-          az account list show --output table
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Test file creation
-        run: |
-          touch ${{ github.workspace }}/test.bla
-      - name: List test files
-        run: |
-          ls -R ${{ github.workspace }}
-      - name: Upload test file
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-              az storage blob upload-batch --account-name svensappstorage --auth-mode login -d '$web/docs/stackrModule/resourceGroup' -s ${{ github.workspace }}/
-
-
+      #- uses: azure/login@v1
+      #  with:
+          #creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Print context info
         run: | 
           echo "The job was automatically triggered by a ${{ github.event_name }} event."

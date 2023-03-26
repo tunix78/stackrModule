@@ -77,13 +77,14 @@ jobs:
       - name: List files in the repository post build
         run: |
           ls -R ${{ github.workspace }}
-      - name: Upload cucumber reports to data store and timestamp, version them
+      - name: Upload cucumber reports and cucumber json to data store and timestamp, version them
         # alternative here is to use the stackrUploadToStorageAccount.py script in stackrTools
         # TODO rename the resulting html and json files to prefix the specific test case file before uploading
         uses: azure/CLI@v1
         with:
           inlineScript: |
               az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/docs/stackrModule/resourceGroup' -s stackrModule/docs/build/html/
+              az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/cucumber-results/stackrModule/resourceGroup' -s stackrModule/test/resourceGroup/results
       #- name: Purge CDN endpoint
       #  uses: azure/CLI@v1
       #  with:

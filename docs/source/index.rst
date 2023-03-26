@@ -23,7 +23,7 @@ est pellentesque. Phasellus quis aliquam metus, ut pellentesque mauris.
 Here is the current security control test cases table in BDD format with the latest test results:
 
 .. raw:: html
-   :url: https://svensappstorage.z6.web.core.windows.net/stackrModule_resourceGroup_cucumber.html
+   :url: https://svensappstorage.z6.web.core.windows.net/docs/stackrModule/resourceGroup/index.html
 
 .. `Test Cases for stackrModule - resourceGroup <https://svensappstorage.z6.web.core.windows.net/stackrModule_resourceGroup_cucumber.html>`_
 

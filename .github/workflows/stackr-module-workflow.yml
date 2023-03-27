@@ -89,8 +89,10 @@ jobs:
 
       - name: List files in the repository post build
         run: |
-          ls -R ${{ github.workspace }}
+          mv stackrModule/test/resourceGroup/plan.json stackrModule/test/resourceGroup/plan.json_orig
+          cat stackrModule/test/resourceGroup/plan.json_orig | jq > stackrModule/test/resourceGroup/plan.json
           cat stackrModule/test/resourceGroup/plan.json
+          ls -R ${{ github.workspace }}
 
       - name: Upload cucumber reports and cucumber json to data store and timestamp, version them
         # alternative here is to use the stackrUploadToStorageAccount.py script in stackrTools

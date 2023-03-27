@@ -11,7 +11,7 @@ jobs:
     name: Build Cucumber And Documentation
     runs-on: ubuntu-latest
     steps:
-      - name: Some test
+      - name: Azure Login
         run: |
           az login --service-principal -u a70d566a-f0cb-44d5-8608-4a3647bdac07 -p=-dk8Q~h6b6_cJHP-bjpL-0hdNwsbb2mzexmcebE9 --tenant ac727e63-2ec2-4956-82b6-e061eb3cca16
       #- uses: azure/login@v1

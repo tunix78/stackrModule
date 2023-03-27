@@ -105,7 +105,8 @@ jobs:
           cd stackrTools/src
           python -m venv .
           pip install -r requirements.txt
-          python stackrUploadToEvidenceStore.py -m stackrModule -s resourceGroup -o stackrstore.icriak4.mongodb.net -p ${{ secrets.MONGODB_SECRET }} -b /home/runner/work/stackrModule/stackrModule -c stackrModule/test/resourceGroup/results/cucumber.json -d bla -t stackrModule/test/resourceGroup
+          terraform
+          python stackrUploadToEvidenceStore.py -m stackrModule -s resourceGroup -o stackrstore.icriak4.mongodb.net -p ${{ secrets.MONGODB_SECRET }} -b /home/runner/work/stackrModule/stackrModule -c stackrModule/test/resourceGroup/results/cucumber.json -d bla -t stackrModule/test/resourceGroup/plan.json
 
       - name: Print job status
         run: |

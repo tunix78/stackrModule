@@ -9,5 +9,5 @@ terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
 .terraform/*
-.venv/*
 .DS_Store
+.venv/*

@@ -17,6 +17,7 @@ jobs:
       #- uses: azure/login@v1
       #  with:
           #creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Print context info
         run: | 
           echo "The job was automatically triggered by a ${{ github.event_name }} event."
@@ -24,10 +25,12 @@ jobs:
           echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
           echo "The ${{ github.repository }} repository has been cloned to the runner."
           echo "The workflow is now ready to test your code on the runner."
+
       - name: Checkout repository code
         uses: actions/checkout@v3
         with:
           repository: tunix78/stackrModule
+
           path: stackrModule
       - name: Checkout stackrOpa
         uses: actions/checkout@v3
@@ -35,48 +38,59 @@ jobs:
           repository: tunix78/stackrOpa
           token: ${{ secrets.STACKR_OPA_ACCESS_PAT }}
           path: stackrOpa
+
       - name: Checkout stackrTools
         uses: actions/checkout@v3
         with:
           repository: tunix78/stackrTools
           token: ${{ secrets.STACKR_TOOLS_ACCESS_PAT }}
           path: stackrTools
+
       - name: List files in the repository post checkout
         run: |
           ls -R ${{ github.workspace }}
+
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
           go-version: 1.18
           check-latest: true
+
       - name: Init and Tidy
         run: |
           cd stackrModule/test/resourceGroup
           go version
           # go mod init github.com/tunix78/stackrModule
           # go mod tidy
+
       - name: Test
         run: |
           cd stackrModule/test/resourceGroup
           mkdir -p results
           go test -v --godog.random --godog.format=cucumber:results/cucumber.json
+
       - name: Install node
         uses: actions/setup-node@v3
         with:
           node-version: 18.15.0
+
       - name: Install cucumber-html-reporter
         run: npm install cucumber-html-reporter --save-dev
+
       - name: Create html reports
         run: |
           cd stackrModule/test
           node index.js
+
       - name: Do the Sphinx Build
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "stackrModule/docs/"
+
       - name: List files in the repository post build
         run: |
           ls -R ${{ github.workspace }}
+
       - name: Upload cucumber reports and cucumber json to data store and timestamp, version them
         # alternative here is to use the stackrUploadToStorageAccount.py script in stackrTools
         # TODO rename the resulting html and json files to prefix the specific test case file before uploading
@@ -85,11 +99,12 @@ jobs:
           inlineScript: |
               az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/docs/stackrModule/resourceGroup' -s stackrModule/docs/build/html/
               az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/cucumber-results/stackrModule/resourceGroup' -s stackrModule/test/resourceGroup/results
-      #- name: Purge CDN endpoint
-      #  uses: azure/CLI@v1
-      #  with:
-      #    inlineScript: |
-      #      az cdn endpoint purge --content-paths  "/*" --profile-name "CDN_PROFILE_NAME" --name "CDN_ENDPOINT" --resource-group "SvensTest"
+
+      - name: Upload documents to evidencing store
+        run: |
+          cd stackrTools/src
+          python stackrUploadToEvidenceStore.py -m stackrModule -s resourceGroup -o stackrstore.icriak4.mongodb.net -p ${{ secrets.MONGODB_SECRET }} -b /home/runner/work/stackrModule/stackrModule -c stackrModule/test/resourceGroup/results/cucumber.json -d bla -t stackrModule/test/resourceGroup
+
       - name: Print job status
         run: |
           echo "This job's status is ${{ job.status }}."

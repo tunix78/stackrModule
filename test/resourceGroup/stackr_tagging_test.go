@@ -30,7 +30,15 @@ var opts = godog.Options{
 
 func deferTearDown(t *testing.T, terraformOptions *terraform.Options) {
 	log.Println("IN TEAR DOWN")
-	defer terraform.Destroy(t, terraformOptions)
+
+	// write the json file to file so we can use it later on
+	err := os.WriteFile("plan.json", []byte(jsonPlan), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	// we only run against the plan so far
+	//defer terraform.Destroy(t, terraformOptions)
 }
 
 func setup(t *testing.T) *terraform.Options {
@@ -86,8 +94,8 @@ func TestMain(m *testing.M) {
 		Options:             &opts,
 	}.Run()
 
-	//log.Println("BEFORE DEFER_TEARDOWN")
-	//deferTearDown(tm, terraformOptions)
+	log.Println("BEFORE DEFER_TEARDOWN")
+	deferTearDown(tm, terraformOptions)
 
 	os.Exit(status)
 }

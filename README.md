@@ -12,6 +12,10 @@ Represents the core stackr module building the Azure base structures
 
 [sphinx](https://www.sphinx-doc.org/en/master/tutorial/getting-started.html)
 
+[Azure Blob Storage Python Library](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-python?tabs=managed-identity%2Croles-azure-cli%2Csign-in-azure-cli)
+OR
+[Use Github to upload to Azure Static Website](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-static-site-github-actions?tabs=userlevel)
+
 ## Build Instructions for godog BDD tests
 
 - Initialize module
@@ -49,6 +53,16 @@ Represents the core stackr module building the Azure base structures
 - Build the documentation
 
     `sphinx-build -b html docs/source/ docs/build/html`
+
+## When checking if storage was uploaded to Azure
+
+- Do NOT use the blob storage level link
+
+    `https://svensappstorage.blob.core.windows.net/$web/docs/stackrModule/resourceGroup/index.html`
+
+- Use the primary endpoint of the storage account as the base link
+
+    `https://svensappstorage.z6.web.core.windows.net/`
 
 ## Instructions to connect to MongoDB and store test results as well as decision logs
 

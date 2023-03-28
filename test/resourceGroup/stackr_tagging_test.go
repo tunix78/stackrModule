@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -14,7 +15,9 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/spf13/pflag" // godog v0.11.0 and later
 
+	//"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/rego"
+	"github.com/open-policy-agent/opa/topdown"
 )
 
 var terraformOptions *terraform.Options
@@ -103,8 +106,8 @@ func TestMain(m *testing.M) {
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	log.Println("IN INITIALIZE_SCENARIO")
 	ctx.Step(`^A resource group is planned via Terraform$`, aResourceGroupIsPlanned)
-	ctx.Step(`^I expect to have at least the following tags present$`, iExpectToHaveAtLeastTheFollowingTagsPresent)
 	ctx.Step(`^I expect the location of the resource group to be one of the following$`, iExpectTheLocationOfTheResourceGroupToBeOneOfTheFollowing)
+	ctx.Step(`^I expect to have at least the following tags present$`, iExpectToHaveAtLeastTheFollowingTagsPresent)
 }
 
 func aResourceGroupIsPlanned() error {
@@ -115,7 +118,7 @@ func aResourceGroupIsPlanned() error {
 }
 
 func iExpectToHaveAtLeastTheFollowingTagsPresent() error {
-	log.Println("IN THEN")
+	log.Println("IN AND")
 
 	ctx := context.Background()
 
@@ -128,14 +131,16 @@ func iExpectToHaveAtLeastTheFollowingTagsPresent() error {
 	}
 
 	// Create query that returns a single boolean value.
-	rego := rego.New(
+	tracer := topdown.NewBufferTracer()
+	regoQuery := rego.New(
 		rego.Query("data.stackr.allow = true"),
 		// FIXME this should be a proper variable, not a relative path
 		rego.Load([]string{regoDir + "/rules/required_tags.rego"}, nil),
+		rego.QueryTracer(tracer),
 		rego.Input(input))
 
 	// Run evaluation.
-	rs, err := rego.Eval(ctx)
+	rs, err := regoQuery.Eval(ctx)
 	log.Println("Allowed: " + strconv.FormatBool(rs.Allowed()))
 
 	// Check if we should fail the scenario
@@ -144,11 +149,17 @@ func iExpectToHaveAtLeastTheFollowingTagsPresent() error {
 		return err
 	}
 
+	topdown.PrettyTraceWithLocation(os.Stdout, *tracer)
+
+	for i, r := range rs {
+		fmt.Printf("Result %d: %s\n", i+1, r)
+	}
+
 	return nil
 }
 
 func iExpectTheLocationOfTheResourceGroupToBeOneOfTheFollowing() error {
-	log.Println("IN AND")
+	log.Println("IN THEN")
 
 	ctx := context.Background()
 

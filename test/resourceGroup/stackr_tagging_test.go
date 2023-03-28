@@ -155,7 +155,13 @@ func iExpectToHaveAtLeastTheFollowingTagsPresent() error {
 		fmt.Printf("Result %d: %s\n", i+1, r)
 	}
 
-	return nil
+	if rs.Allowed() {
+		log.Println("Discovered success, NOT test case")
+		return nil
+	} else {
+		log.Println("Discovered failure, FAILING test case")
+		return fmt.Errorf("Failing test case: Tagging")
+	}
 }
 
 func iExpectTheLocationOfTheResourceGroupToBeOneOfTheFollowing() error {
@@ -188,5 +194,11 @@ func iExpectTheLocationOfTheResourceGroupToBeOneOfTheFollowing() error {
 		return err
 	}
 
-	return nil
+	if rs.Allowed() {
+		log.Println("Discovered success, NOT test case")
+		return nil
+	} else {
+		log.Println("Discovered failure, FAILING test case")
+		return fmt.Errorf("Failing test case: Region")
+	}
 }

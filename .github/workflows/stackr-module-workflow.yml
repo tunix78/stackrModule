@@ -100,8 +100,8 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-              az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/docs/stackrModule/resourceGroup' -s stackrModule/docs/build/html/
-              az storage blob upload-batch --account-name svensappstorage --auth-mode key -d '$web/cucumber-results/stackrModule/resourceGroup' -s stackrModule/test/resourceGroup/results
+              az storage blob upload-batch --overwrite --account-name svensappstorage --auth-mode key -d '$web/docs/stackrModule/resourceGroup' -s stackrModule/docs/build/html/
+              az storage blob upload-batch --overwrite --account-name svensappstorage --auth-mode key -d '$web/cucumber-results/stackrModule/resourceGroup' -s stackrModule/test/resourceGroup/results
 
       - name: Upload documents to evidencing store
         run: |

@@ -11,3 +11,7 @@ terraform.tfstate.backup
 .terraform/*
 .DS_Store
 .venv/*
+plan.out
+plan.json
+test/package-lock.json
+test/package.json

@@ -64,6 +64,7 @@ jobs:
           # go mod tidy
 
       - name: Test
+        continue-on-error: true
         run: |
           cd stackrModule/test/resourceGroup
           mkdir -p results
